@@ -1,0 +1,11 @@
+{
+  "domain": "solax",
+  "name": "SolaX Power Beta",
+  "documentation": "https://www.home-assistant.io/integrations/solax",
+  "requirements": ["solax@git+https://github.com/VadimKraus/solax.git@feature/QVOLTHYBG33P-Inverter"],
+  "codeowners": ["@squishykid"],
+  "iot_class": "local_polling",
+  "config_flow": true,
+  "loggers": ["solax"],
+  "version": "0.0.0-dev"
+}
