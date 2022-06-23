@@ -6,7 +6,7 @@
 	"appPort": [
 		"9123:8123"
 	],
-	"postCreateCommand": "container install",
+	"postCreateCommand": "git config --global url.\"https://\".insteadOf git:// && container install",
 	"extensions": [
 		"ms-python.python",
 		"github.vscode-pull-request-github",

@@ -11,7 +11,7 @@ from homeassistant.const import CONF_IP_ADDRESS, CONF_PASSWORD, CONF_PORT
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 
-from .const import DOMAIN
+from .const import DOMAIN, OVERWRITE_DEP
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,19 +28,23 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 
 
 def force_install_dev_version():
+    _LOGGER.warning(f"Using custom version of solax, performing lib replacement")
     import pkg_resources
     from importlib.metadata import version
 
-    dep = "solax@git+https://github.com/VadimKraus/solax.git@feature/QVOLTHYBG33P-Inverter"
-    req = pkg_resources.Requirement.parse(dep)
+    req = pkg_resources.Requirement.parse(OVERWRITE_DEP)
     installed_version = version(req.project_name)
-    print(installed_version)
-    if installed_version == "0.2.9":
-        _LOGGER.error("Wrong version of solax installed")
+    _LOGGER.warning(f"Installed Version: {installed_version}")
+    if not ".dev" in installed_version:
         import subprocess
         import sys
 
-        subprocess.check_call([sys.executable, "-m", "pip", "install", dep])
+        _LOGGER.warning("Uninstalling")
+        subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "solax", "-y"])
+        _LOGGER.warning("Installing")
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", "-U", OVERWRITE_DEP]
+        )
         raise Exception("Wrong version of solax installed, had to force reinstall")
 
 
